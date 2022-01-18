@@ -1,54 +1,29 @@
 package com.una.notepad.model;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity
 public class Note {
-
-    public Note(){
-        this.id = -1;
-        this.title = "Titulo de la nota";
-        this.content = "";
-
+    public Note(){}
+    public Note(String title, String content){
+        this(0, title, content);
     }
-
     public Note(int id, String title, String content){
         this.id = id;
         this.title = title;
         this.content = content;
-
     }
 
-    public Note(String title, String content){
+    @PrimaryKey(autoGenerate = true)
+    public int id = 0;
 
-        this.title = title;
-        this.content = content;
-        this.id= -1;
+    public String title;
+    public String content;
 
-    }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
+    @Override
+    public String toString(){
         return title;
     }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    int id;
-    String title;
-    String content;
 }

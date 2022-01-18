@@ -1,57 +1,63 @@
 package com.una.notepad.controller;
 
+import android.app.Application;
+import android.util.Log;
+
+import androidx.room.Room;
+
 import java.util.List;
-import java.util.ArrayList;
 import com.una.notepad.model.Note;
+import com.una.notepad.model.NoteDao;
 
 
 public class NoteController {
-    //Returns controller instance
-    public static NoteController getInstance(){
-        if(instance == null){
-            instance = new NoteController();
-        }
-        return instance;
-    }
+
+    private NoteController(){}
+
     //Adds a note
-    private boolean addNote(String title, String content){
-        int id = notes.size();
-        Note newNote = new Note(id, title, content);
-        return notes.add(newNote);
+    private boolean addNote(Note note){
+        db.noteDao().insertAll(note);
+        return true;
     }
     //Updates a note value
     private boolean updateNote(Note note){
-        Note noteToUpdate = getNote(note.getId());
-
-        if(noteToUpdate != null){
-            noteToUpdate.setTitle(note.getTitle());
-            noteToUpdate.setContent(note.getContent());
-            return true;
-        }
-        return false;
+        db.noteDao().update(note);
+        return true;
     }
     //Returns a note with the specified id
     public Note getNote(int id){
-        return notes.get(id);
+        return db.noteDao().getNote(id);
     }
 
     public boolean save(Note note){
-        if(note.getId() == -1){
-            addNote(note.getTitle(), note.getContent());
-
-
-
-            return true;
+        if(note.id == 0){
+            return addNote(note);
         }else{
             return updateNote(note);
         }
     }
-
-    public List<Note> getNotes(){
-        return notes;
-
+    public boolean deleteNote(Note note) {
+        db.noteDao().delete(note);
+        return true;
     }
 
-    private List<Note> notes = new ArrayList<Note>();
+    public List<Note> getNotes(){
+        return db.noteDao().getAll();
+    }
+
+    private AppDatabase db;
     private static NoteController instance;
+    public static NoteController getInstance(Application app){
+        if(instance == null){
+            instance = new NoteController();
+            instance.db = Room.databaseBuilder(
+                    app.getApplicationContext(),
+                    AppDatabase.class,
+                    "notes-db"
+            ).build();
+        }
+        return instance;
+    }
+
+
 }
