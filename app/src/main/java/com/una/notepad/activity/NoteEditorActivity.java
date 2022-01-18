@@ -2,102 +2,74 @@ package com.una.notepad.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import com.una.notepad.model.Note;
 
 import com.una.notepad.R;
 import com.una.notepad.controller.NoteController;
 
-import java.util.Collection;
-import java.util.HashSet;
 
 public class NoteEditorActivity extends AppCompatActivity {
 
     int noteId;
+    EditText title = null;
+    EditText content = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_editor);
 
+        init();
+        load();
+    }
+
+    private void init(){
         Intent intent = getIntent();
+        noteId = intent.getIntExtra("noteId", 0);
 
+        title = findViewById(R.id.noteTitle);
+        content = findViewById(R.id.noteText);
+    }
 
-        noteId = intent.getIntExtra("noteId",-1);
+    private void load(){
+        title.setEnabled(false);
+        content.setEnabled(false);
+        new Thread(()->{
+            Note note = NoteController.getInstance(getApplication()).getNote(noteId);
+            runOnUiThread(()->{
+                if(note != null){
+                    title.setText(note.title);
+                    content.setText(note.content);
+                }
+                title.setEnabled(true);
+                content.setEnabled(true);
+            });
+        }).start();
 
-        if(noteId != -1){
-            EditText editText = findViewById(R.id.noteText);
-            editText.setText(controller.getNote(noteId).getContent());
+    }
+
+    private void saveNote(){
+        String strTitle = title.getText().toString();
+        String strContent = content.getText().toString();
+        if(!strTitle.isEmpty()){
+            NoteController.getInstance(getApplication()).save(new Note(noteId, strTitle, strContent));
+            Log.v("Success", "Nota guardada");
         }
-
     }
 
-
-
-    public void saveNote(View v){
-
-        View editTextNote = findViewById(R.id.noteText);
-        View editTextTitle = findViewById(R.id.noteTitle);
-
-
-        String content = ((EditText)editTextNote).getText().toString();
-        String title = ((EditText) editTextTitle).getText().toString();
-
-        Note note = new Note(title, content);
-
-        controller.getInstance().save(note);
-        MainActivity.getNotesListView().add(title);
-
-
-
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("notepad1", Context.MODE_PRIVATE);
-        HashSet<String> set = new HashSet(MainActivity.getNotesListView());
-
-        sharedPreferences.edit().putStringSet("notepad1",set).apply();
-
-        Log.d("Success", "Nota guardada");
-
-
-    }
-
-
-
-
-
-
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.save_note_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item){
-        super.onOptionsItemSelected(item);
+    public void onBackPressed() {
 
-        if(item.getItemId() == R.id.save_note){
-            controller.save(note);
-
-            SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("savedNotes", Context.MODE_PRIVATE);
-
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("nota", note.getContent());
-            editor.commit();
-
-            return true;
-        }
-        return false;
-    }*/
-
-
-
-    private NoteController controller = new NoteController();
+        new Thread(()->{
+            saveNote();
+            runOnUiThread(()->{
+                super.onBackPressed();
+            });
+        }).start();
+    }
 
 }
