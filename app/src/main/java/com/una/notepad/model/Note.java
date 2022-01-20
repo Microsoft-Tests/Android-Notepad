@@ -1,26 +1,44 @@
 package com.una.notepad.model;
 
+/*
+ * Note model package class using MVC pattern and SQLite Database tool
+ *
+ * */
+
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity
 public class Note {
 
-    public Note(){
-        this.id = -1;
+    //Will automatically increase the id primary key,
+    // it means, any record (Or row) in the database table
+    @PrimaryKey(autoGenerate = true)
+    private int id = 0;
+
+
+    public String title;
+    public String content;
+
+    public Note() {
+        this.id = 0;
         this.title = "Titulo de la nota";
         this.content = "";
 
     }
 
-    public Note(int id, String title, String content){
+    public Note(int id, String title, String content) {
         this.id = id;
         this.title = title;
         this.content = content;
 
     }
 
-    public Note(String title, String content){
+    public Note(String title, String content) {
 
         this.title = title;
         this.content = content;
-        this.id= -1;
+        this.id = 0;
 
     }
 
@@ -48,7 +66,10 @@ public class Note {
         this.content = content;
     }
 
-    int id;
-    String title;
-    String content;
+    @Override
+    public String toString(){
+       return getTitle();
+
+    }
+
 }

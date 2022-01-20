@@ -1,95 +1,108 @@
 package com.una.notepad.activity;
 
-import android.content.Context;
+
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
 import com.una.notepad.R;
 import com.una.notepad.controller.NoteController;
-
 import com.una.notepad.model.Note;
-
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
+
+import com.microsoft.appcenter.AppCenter;
+import com.microsoft.appcenter.analytics.Analytics;
+import com.microsoft.appcenter.crashes.Crashes;
+
 
 public class MainActivity extends AppCompatActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ListView listView = findViewById(R.id.listView);
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("notepad1", Context.MODE_PRIVATE);
-        HashSet<String> set = (HashSet<String>) sharedPreferences.getStringSet("notepad1", null);
+        AppCenter.start(getApplication(), "e94d826d-5d1b-4366-ad89-955796110784",
+                Analytics.class, Crashes.class);
 
-        if(set == null){
-            controller.save(new Note("Example note", "Example text"));
-            notesListView.add("Example note");
-        }else{
+        init();
+    }
 
-           notesListView = new ArrayList(set);
-        }
+    public void init() {
+        listView = findViewById(R.id.listView);
+        update();
 
-        arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_expandable_list_item_1, notesListView);
-        listView.setAdapter(arrayAdapter);
+        listView.setOnItemClickListener((adapterView, view, pos, l) -> {
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    Intent intent = new Intent(this, NoteEditorActivity.class);
+                    Note note = notes.get(pos);
+                    intent.putExtra("noteId", note.getId());
+                    startActivity(intent);
+                }
+        );
 
-                Intent intent = new Intent(getApplicationContext(), NoteEditorActivity.class);
-                intent.putExtra("noteId",i);
-                startActivity(intent);
+        listView.setOnItemLongClickListener((adapterView, view, pos, l) -> {
+                    new Thread(() -> {
+                        Note note = notes.get(pos);
+                        NoteController.getInstance(getApplication()).deleteNote(note);
+                        notes = NoteController.getInstance(getApplication()).getNotes();
 
+                        runOnUiThread(() -> {
+                            arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_expandable_list_item_1, notes);
+                            listView.setAdapter(arrayAdapter);
 
-            }
-        });
+                        });
 
+                    }).start();
+
+                    return true;
+                }
+        );
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu){
+    public void onResume() {
+        update();
+        super.onResume();
+    }
+
+    public void update() {
+
+        new Thread(() -> {
+            notes = NoteController.getInstance(getApplication()).getNotes();
+
+            runOnUiThread(() -> {
+                arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_expandable_list_item_1, notes);
+                listView.setAdapter(arrayAdapter);
+            });
+        }).start();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.add_note_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
+
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item){
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         super.onOptionsItemSelected(item);
 
-        if(item.getItemId() == R.id.add_note){
+        if (item.getItemId() == R.id.add_note) {
             Intent intent = new Intent(this, NoteEditorActivity.class);
             startActivity(intent);
             return true;
-
         }
         return false;
     }
 
-    public static ArrayList<String> getNotesListView(){
-        return notesListView;
-
-    }
-
-    public static ArrayAdapter getArrayAdapter() {
-        return arrayAdapter;
-    }
-
-    private NoteController controller = new NoteController();
-    static ArrayList<String> notesListView = new ArrayList<>();
+    static List<Note> notes;
     static ArrayAdapter arrayAdapter;
+    private ListView listView;
 }
