@@ -34,14 +34,6 @@ public class Note {
 
     }
 
-    public Note(String title, String content) {
-
-        this.title = title;
-        this.content = content;
-        this.id = 0;
-
-    }
-
     public int getId() {
         return id;
     }
