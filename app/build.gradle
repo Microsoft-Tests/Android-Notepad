@@ -12,6 +12,12 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "APPCENTER_APP_SECRET", "\"\"")
+        if (System.getenv("APPCENTER_APP_SECRET") != null) {
+            buildConfigField("String", "APPCENTER_APP_SECRET", "\"${System.getenv("APPCENTER_APP_SECRET")}\"")
+        }
+
     }
 
     buildTypes {

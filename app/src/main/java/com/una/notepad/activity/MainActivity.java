@@ -10,6 +10,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.una.notepad.BuildConfig;
 import com.una.notepad.R;
 import com.una.notepad.controller.NoteController;
 import com.una.notepad.model.Note;
@@ -27,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        AppCenter.start(getApplication(), "e94d826d-5d1b-4366-ad89-955796110784",
+        AppCenter.start(getApplication(), BuildConfig.APPCENTER_APP_SECRET,
                 Analytics.class, Crashes.class);
 
         init();
