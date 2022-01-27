@@ -3,6 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Dev/Android/NotePad/Android-Notepad/app/src/main/res/layout/activity_main.xml" value="0.3651041666666667" />
+        <entry key="..\:/Dev/Android/NotePad/Android-Notepad/app/src/main/res/layout/activity_note_editor.xml" value="0.36354166666666665" />
+        <entry key="..\:/Dev/Android/NotePad/Android-Notepad/app/src/main/res/menu/add_note_menu.xml" value="0.36354166666666665" />
+        <entry key="..\:/Dev/Android/NotePad/Android-Notepad/app/src/main/res/menu/save_note_menu.xml" value="0.36354166666666665" />
         <entry key="..\:/Dev/Android/NotePad/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Dev/Android/NotePad/app/src/main/res/layout/activity_note_editor.xml" value="0.5" />
         <entry key="..\:/Dev/Android/NotePad/app/src/main/res/menu/add_note_menu.xml" value="0.3302083333333333" />

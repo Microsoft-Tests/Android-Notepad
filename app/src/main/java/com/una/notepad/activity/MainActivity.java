@@ -11,9 +11,11 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.microsoft.appcenter.distribute.Distribute;
 import com.una.notepad.BuildConfig;
 import com.una.notepad.R;
 import com.una.notepad.controller.NoteController;
+import com.una.notepad.model.MyDistributeListener;
 import com.una.notepad.model.Note;
 import java.util.List;
 
@@ -29,7 +31,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        AppCenter.start(getApplication(), BuildConfig.APPCENTER_APP_SECRET,
+        Distribute.setListener(new MyDistributeListener());
+        AppCenter.start(getApplication(), BuildConfig.APPCENTER_APP_SECRET, Distribute.class,
                 Analytics.class, Crashes.class);
 
         init();

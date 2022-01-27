@@ -11,13 +11,16 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 
+import com.microsoft.appcenter.analytics.Analytics;
 import com.una.notepad.model.Note;
 
 import com.una.notepad.R;
 import com.una.notepad.controller.NoteController;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 public class NoteEditorActivity extends AppCompatActivity {
 
@@ -80,6 +83,12 @@ public class NoteEditorActivity extends AppCompatActivity {
 
         new Thread(() -> {
             NoteController.getInstance(getApplication()).save(newNote);
+            Map<String, String> properties = new HashMap<>();
+            properties.put("Category", "Note");
+
+            Analytics.trackEvent("Note added", properties);
+
+
             Log.d("Success", "Nota guardada");
         }).start();
 
