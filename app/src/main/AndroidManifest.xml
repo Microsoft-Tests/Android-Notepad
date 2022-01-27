@@ -11,8 +11,8 @@
         android:theme="@style/Theme.NotePad">
         <activity
             android:name="com.una.notepad.activity.MainActivity"
-            android:exported="true">
-
+            android:exported="true"
+            android:extractNativeLibs="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
