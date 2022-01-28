@@ -36,9 +36,12 @@ public class MainActivity extends AppCompatActivity {
                 Analytics.class, Crashes.class);
 
         init();
+
+        Distribute.checkForUpdate();
     }
 
     public void init() {
+
         listView = findViewById(R.id.listView);
         update();
 
