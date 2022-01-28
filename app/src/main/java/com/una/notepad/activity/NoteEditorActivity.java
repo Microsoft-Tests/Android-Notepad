@@ -86,7 +86,10 @@ public class NoteEditorActivity extends AppCompatActivity {
             Map<String, String> properties = new HashMap<>();
             properties.put("Category", "Note");
 
+            properties.put("Title", title);
+
             Analytics.trackEvent("Note added", properties);
+
 
 
             Log.d("Success", "Nota guardada");
