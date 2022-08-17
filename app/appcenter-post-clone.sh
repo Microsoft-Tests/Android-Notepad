@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-echo "Buenas"
+npm install -g appcenter-cli
