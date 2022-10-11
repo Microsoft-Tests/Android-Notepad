@@ -21,20 +21,64 @@ android {
     }
 
     buildTypes {
-        release {
+        debug {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            signingConfig = createDebugSigningConfig(signingConfig)
+
+            applicationIdSuffix ".dev"
+            testCoverageEnabled false // isJen kinsMachine() // test coverage enabled only on jenkins machine - android instrumentation is not running
+            buildConfigField "String", "VERSION_BUILD_NUMBER", "\"${projectVersionBuildNumber}\""
+            // CANADA
+            resValue "bool", "is_dev_build", "true"
+            manifestPlaceholders = [    applink: "dpcanada.test-app.link",
+                                        alternateAppLink: "dpcanada-alternate.test-app.link"]
         }
+        // CANADA needs new QA variant for testing/distribution with app center
+        // It uses same settings as debug except needs to be signed with release to distribute
         qa {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            signingConfig signingConfigs.release
+
+
+            applicationIdSuffix ".qa"
+            testCoverageEnabled false // isJenkinsMachine() // test coverage enabled only on jenkins machine - android instrumentation is not running
+            buildConfigField "String", "VERSION_BUILD_NUMBER", "\"${projectVersionBuildNumber}\""
+            debuggable = true
+            // CANADA
+            resValue "bool", "is_dev_build", "true"
+            manifestPlaceholders = [    applink: "dpcanada.test-app.link",
+                                        alternateAppLink: "dpcanada-alternate.test-app.link"]
+        }
+        release {
+            minifyEnabled true
+            resValue "bool", "is_dev_build", "false"
+            manifestPlaceholders = [    applink: "dpcanada.app.link",
+                                        alternateAppLink: "dpcanada-alternate.app.link"]
+
+            proguardFile 'proguard-google-play-services.pro'
+            proguardFile 'proguard-gson.pro'
+            proguardFile 'proguard-guava.pro'
+            proguardFile 'proguard-square-otto.pro'
+            proguardFile 'proguard-square-picasso.pro'
+            proguardFile 'proguard-springrest.pro'
+            proguardFile 'proguard-tealium.pro'
+            proguardFile 'proguard-json-api.pro'
+            proguardFile 'proguard-rules.pro'
+            proguardFile 'proguard-launchdarkly.pro'
+            proguardFile 'proguard-retrofit2.pro'
+
+            signingConfig signingConfigs.release // CANADA
+
+            // signingConfig = createSigningConfig(signingConfig)
+
+            buildConfigField "String", "VERSION_BUILD_NUMBER", "\"${projectVersionBuildNumber}\""
         }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
-    }
-    productFlavors {
     }
 }
 
