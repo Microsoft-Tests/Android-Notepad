@@ -36,7 +36,21 @@ android {
         }
         // CANADA needs new QA variant for testing/distribution with app center
         // It uses same settings as debug except needs to be signed with release to distribute
-       
+        qa {
+            minifyEnabled false
+
+            signingConfig signingConfigs.release
+
+
+            applicationIdSuffix ".qa"
+            testCoverageEnabled false // isJenkinsMachine() // test coverage enabled only on jenkins machine - android instrumentation is not running
+            buildConfigField "String", "VERSION_BUILD_NUMBER", "\"${projectVersionBuildNumber}\""
+            debuggable = true
+            // CANADA
+            resValue "bool", "is_dev_build", "true"
+            manifestPlaceholders = [    applink: "dpcanada.test-app.link",
+                                        alternateAppLink: "dpcanada-alternate.test-app.link"]
+        }
         release {
             minifyEnabled true
             resValue "bool", "is_dev_build", "false"
