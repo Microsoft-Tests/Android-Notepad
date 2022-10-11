@@ -126,8 +126,16 @@ android {
         qa {
             minifyEnabled false
 
-            signingConfig signingConfigs.release
 
+
+            applicationIdSuffix ".qa"
+            testCoverageEnabled false // isJenkinsMachine() // test coverage enabled only on jenkins machine - android instrumentation is not running
+            buildConfigField "String", "VERSION_BUILD_NUMBER", "\"${projectVersionBuildNumber}\""
+            debuggable = true
+            // CANADA
+            resValue "bool", "is_dev_build", "true"
+            manifestPlaceholders = [    applink: "dpcanada.test-app.link",
+                                        alternateAppLink: "dpcanada-alternate.test-app.link"]
         }
         release {
             minifyEnabled true
