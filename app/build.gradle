@@ -34,16 +34,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
-
-    flavorDimensions "distribute"
-    productFlavors {
-        appCenter {
-            dimension "distribute"
-        }
-        googlePlay {
-            dimension "distribute"
-        }
-    }
 }
 
 dependencies {
