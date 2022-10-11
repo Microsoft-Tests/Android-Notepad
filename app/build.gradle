@@ -99,7 +99,7 @@ android {
 
     // CANADA
     signingConfigs {
-        release {
+        releaseeee {
             storeFile file("dominos_android_prod_key.keystore")
             storePassword props.STORE_PASSWORD
             keyAlias props.KEY_ALIAS
