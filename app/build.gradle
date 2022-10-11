@@ -125,7 +125,7 @@ android {
         // It uses same settings as debug except needs to be signed with release to distribute
 
 
-        release {
+        releasee {
             minifyEnabled true
             resValue "bool", "is_dev_build", "false"
             manifestPlaceholders = [    applink: "dpcanada.app.link",
