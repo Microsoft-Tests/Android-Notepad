@@ -32,6 +32,10 @@ android {
             minifyEnabled false
         }
 
+        qa {
+            minifyEnabled false
+        }
+
 
     }
     fixVariantNames("app", applicationVariants)
