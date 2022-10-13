@@ -25,9 +25,12 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-        si {
+        qa {
+            minifyEnabled false
+        }
 
-            
+        debug{
+            minifyEnabled false
         }
     }
     compileOptions {
@@ -35,15 +38,7 @@ android {
         targetCompatibility JavaVersion.VERSION_11
     }
 
-    flavorDimensions "distribute"
-    productFlavors {
-        appCenter {
-            dimension "distribute"
-        }
-        googlePlay {
-            dimension "distribute"
-        }
-    }
+
 }
 
 dependencies {
