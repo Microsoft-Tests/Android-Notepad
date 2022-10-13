@@ -31,6 +31,13 @@ android {
         debug {
             minifyEnabled false
         }
+        fixVariantNames("app", applicationVariants)
+        applicationVariants.all { variant ->
+            //apk CANADA
+            def apk = variant.outputs[0].outputFile;
+            def newName = apk.name.replace(".apk", String.format("-ca-%s.apk", defaultConfig.versionName));
+            variant.outputs[0].outputFileName = new File(newName);
+        }
 
     }
 
