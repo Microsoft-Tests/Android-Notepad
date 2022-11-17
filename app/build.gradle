@@ -1,206 +1,43 @@
-apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.firebase-perf'
-apply plugin: 'com.google.firebase.crashlytics'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-parcelize'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'idea'
-apply from: './build-pipeline.gradle'
-
-
-//load properties from the properties file, which is not in source control - CANADA
-final String propFilename = "dpc-android-signing.properties"
-File releaseSigningInfo = rootProject.file(propFilename)
-if(!releaseSigningInfo.exists()) {
-    println "You need a copy of "+propFilename
-}
-Properties props = new Properties()
-props.load(new FileInputStream(releaseSigningInfo))
-
-// CANADA - add ajoberstar
-buildscript {
-    dependencies {
-        classpath 'commons-lang:commons-lang:2.6'
-        classpath 'org.ajoberstar:gradle-git:1.5.0'
-    }
-}
-
-// CANADA
-apply plugin: 'org.ajoberstar.grgit'
-
-println "Project Version Name: ${projectVersionName}"
-
-idea {
-    module {
-        downloadJavadoc = true
-        downloadSources = true
-    }
+plugins {
+    id 'com.android.application'
 }
 
 android {
-    buildFeatures {
-        dataBinding = true
-    }
-    // Enforces Gradle to only compile the version number stated in dependencies,
-    // no matter which version number the dependencies have stated, avoids dependency conflicts
-    configurations.all {
-        resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
-    }
-    compileSdkVersion projectCompileSdkVersion
-    buildToolsVersion "${projectBuildToolsVersion}"
+    compileSdk 32
+
     defaultConfig {
-        versionCode projectVersionCode
-        applicationId "ca.dominospizza"
-        versionName "${projectVersionName}"
-        minSdkVersion projectMinSdkVersion
-        targetSdkVersion projectTargetSdkVersion
-        buildConfigField "boolean", "IS_PEN_TEST_BUILD", "${checkIsPenTestBuild()}"
-        multiDexEnabled true
+        applicationId "com.example.l8ymtwgy"
+        minSdk 30
+        targetSdk 32
+        versionCode 1
+        versionName "1.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
-    }
-    sourceSets {
-        main {
-            // CANADA
-            manifest.srcFile 'src/main/AndroidManifestCa.xml'
-            java.srcDirs = ['src/main/java']
-            resources.srcDirs = ['src/main/resources']
-            res.srcDirs = ['src/main/res']
-            assets.srcDirs = ['src/main/assets']
-        }
-
-        androidTest.setRoot('src/androidTest')
-    }
-
-    packagingOptions {
-        exclude 'META-INF/proguard/androidx-annotations.pro'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/license.txt'
-        exclude 'META-INF/notice.txt'
-        exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/spring.tooling'
-        exclude 'META-INF/spring.handlers'
-        exclude 'META-INF/spring.factories'
-        exclude 'META-INF/spring.schemas'
-        exclude 'META-INF/maven/com.google.guava/guava/pom.properties'
-        exclude 'META-INF/maven/com.google.guava/guava/pom.xml'
-        exclude 'LICENSE.txt'
-        exclude 'git.properties'
-    }
-    lintOptions {
-        abortOnError false
-        ignoreWarnings true
-    }
-    productFlavors {
-    }
-
-    // CANADA
-    signingConfigs {
-        release {
-            storeFile file("dominos_android_prod_key.keystore")
-            storePassword props.STORE_PASSWORD
-            keyAlias props.KEY_ALIAS
-            keyPassword props.KEY_PASSWORD
-        }
     }
 
     buildTypes {
-        debug {
-            minifyEnabled false
-
-            signingConfig = createDebugSigningConfig(signingConfig)
-
-            applicationIdSuffix ".dev"
-            testCoverageEnabled false // isJen kinsMachine() // test coverage enabled only on jenkins machine - android instrumentation is not running
-            buildConfigField "String", "VERSION_BUILD_NUMBER", "\"${projectVersionBuildNumber}\""
-            // CANADA
-            resValue "bool", "is_dev_build", "true"
-            manifestPlaceholders = [    applink: "dpcanada.test-app.link",
-                                        alternateAppLink: "dpcanada-alternate.test-app.link"]
-        }
-        // CANADA needs new QA variant for testing/distribution with app center
-        // It uses same settings as debug except needs to be signed with release to distribute
-        qa {
-            minifyEnabled false
-
-            signingConfig signingConfigs.release
-
-
-            applicationIdSuffix ".qa"
-            testCoverageEnabled false // isJenkinsMachine() // test coverage enabled only on jenkins machine - android instrumentation is not running
-            buildConfigField "String", "VERSION_BUILD_NUMBER", "\"${projectVersionBuildNumber}\""
-            debuggable = true
-            // CANADA
-            resValue "bool", "is_dev_build", "true"
-            manifestPlaceholders = [    applink: "dpcanada.test-app.link",
-                                        alternateAppLink: "dpcanada-alternate.test-app.link"]
-        }
         release {
-            minifyEnabled true
-            resValue "bool", "is_dev_build", "false"
-            manifestPlaceholders = [    applink: "dpcanada.app.link",
-                                        alternateAppLink: "dpcanada-alternate.app.link"]
-
-            proguardFile 'proguard-google-play-services.pro'
-            proguardFile 'proguard-gson.pro'
-            proguardFile 'proguard-guava.pro'
-            proguardFile 'proguard-square-otto.pro'
-            proguardFile 'proguard-square-picasso.pro'
-            proguardFile 'proguard-springrest.pro'
-            proguardFile 'proguard-tealium.pro'
-            proguardFile 'proguard-json-api.pro'
-            proguardFile 'proguard-rules.pro'
-            proguardFile 'proguard-launchdarkly.pro'
-            proguardFile 'proguard-retrofit2.pro'
-
-            signingConfig signingConfigs.release // CANADA
-
-            // signingConfig = createSigningConfig(signingConfig)
-
-            buildConfigField "String", "VERSION_BUILD_NUMBER", "\"${projectVersionBuildNumber}\""
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-    }
-    fixVariantNames("app", applicationVariants)
-    applicationVariants.all { variant ->
-        //apk CANADA
-        def apk = variant.outputs[0].outputFile;
-        def newName = apk.name.replace(".apk", String.format("-ca-%s.apk", defaultConfig.versionName));
-        variant.outputs[0].outputFileName = new File(newName);
-    }
-    testOptions {
-        unitTests.returnDefaultValues = true
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
-    }
-}
-
-afterEvaluate {
-    assembleDebug.doLast {
-        copy {
-            from "$rootDir/DominosApp/build/outputs/apk/debug/"
-            into "$rootDir/target/"
-        }
-        // to avoid having output-metadata.json since it causes failure in consecutive release builds (while uploading to release artifacts directory).
-        delete "$rootDir/target/output-metadata.json"
-    }
-    assembleRelease.doLast {
-        copy {
-            from "$rootDir/DominosApp/build/outputs/apk/release/"
-            into "$rootDir/target/"
-        }
-        delete "$rootDir/target/output-metadata.json"
+    buildFeatures {
+        viewBinding true
     }
 }
 
 dependencies {
 
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.navigation:navigation-fragment:2.5.2'
+    implementation 'androidx.navigation:navigation-ui:2.5.2'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 }
