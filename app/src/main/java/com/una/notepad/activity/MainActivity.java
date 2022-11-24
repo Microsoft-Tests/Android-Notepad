@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Distribute.setListener(new MyDistributeListener());
-        AppCenter.start(getApplication(), BuildConfig.APPCENTER_APP_SECRET, Distribute.class,
+        AppCenter.start(getApplication(), "c8c96064-0c18-490f-8d03-8a71669c2886", Distribute.class,
                 Analytics.class, Crashes.class);
 
         init();
