@@ -1,14 +1,3 @@
-# Gradle
-- task: AppCenterDistribute@3
-  inputs:
-    serverEndpoint: 'AppCenterTests'
-    appSlug: 'farguedas/A-Notepad'
-    appFile: 'si'
-    symbolsOption: 'Android'
-    releaseNotesOption: 'input'
-    releaseNotesInput: 'Si'
-    destinationType: 'groups'
-    distributionGroupId: 'Collaborators'
 # Build your Java project and run tests with Gradle using a Gradle wrapper script.
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/java
@@ -17,7 +6,7 @@ trigger:
 - master
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: macos-latest
 
 steps:
 - task: Gradle@2
@@ -31,3 +20,13 @@ steps:
     publishJUnitResults: true
     testResultsFiles: '**/TEST-*.xml'
     tasks: 'build'
+- task: AppCenterDistribute@3
+  inputs:
+    serverEndpoint: 'App Center - SC'
+    appSlug: 'farguedas99/A-Notepad'
+    appFile: './sample.apk'
+    buildVersion: '1.2'
+    symbolsOption: 'Android'
+    releaseNotesOption: 'input'
+    releaseNotesInput: 'Distribute test.'
+    destinationType: 'groups'
