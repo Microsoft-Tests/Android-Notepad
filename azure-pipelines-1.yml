@@ -23,6 +23,10 @@ steps:
     publishJUnitResults: false
     tasks: 'build'
 
+- task: DownloadSecureFile@1
+  inputs:
+    secureFile: '4f369a2f-96b4-47fb-9add-9b4299b979f2'
+
 - task: AndroidSigning@3
   inputs:
     apkFiles: '**/*.apk' 
