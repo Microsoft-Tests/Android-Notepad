@@ -31,7 +31,7 @@ steps:
   inputs:
     apkFiles: '**/*.apk' 
     apksign: true
-    apksignerKeystoreFile: 'production.keystore'
+    apksignerKeystoreFile: '.'
     apksignerKeystorePassword: $(keystore.password)
     apksignerKeystoreAlias: $(key.alias)
     apksignerKeyPassword: $(key.password)
