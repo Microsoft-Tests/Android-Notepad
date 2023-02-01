@@ -13,7 +13,7 @@ variables:
   lastCommitMessage: App Center SDK integrated
   pr.check.id: ''
   pr.status.id: ''
-  user-defined.JAVA_HOME: $(JAVA_HOME_11_X64)
+  JAVA_HOME: $(JAVA_HOME_11_X64)
   MOBILECENTER_OUTPUT_DIRECTORY: $(Build.ArtifactStagingDirectory)/build
   MOBILECENTER_BRANCH: main
   MOBILECENTER_BUILD_ID: $(Build.BuildNumber)
