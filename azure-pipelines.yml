@@ -33,8 +33,8 @@ variables:
   keystorePassword: null
   keyAlias: null
   keyPassword: null
-  keystoreFilename: keystore.jks
-  keystoreSecureFileId: cc700827-4072-4482-809f-af6c5514c5d8
+  keystoreFilename: master.jks
+  keystoreSecureFileId: 9bc864f1-0399-49f9-9904-d6b6bfc3b0cc
   keystoreSecureFilename: add57760-2d02-42eb-a9b7-0c7097f0eb51
   keystoreEncoded: null
   automaticSigning: 'false'
